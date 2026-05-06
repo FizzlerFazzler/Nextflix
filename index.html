@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Nextflix</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b0b0b;
+color:white;
+}
+
+header{
+background:black;
+padding:20px 40px;
+font-size:30px;
+font-weight:bold;
+color:#e50914;
+}
+
+.grid{
+padding:40px;
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+gap:20px;
+}
+
+.card{
+background:#1a1a1a;
+padding:10px;
+border-radius:10px;
+text-align:center;
+transition:0.2s;
+cursor:pointer;
+}
+
+.card:hover{
+transform:scale(1.05);
+}
+
+.card img{
+width:100%;
+height:260px;
+object-fit:cover;
+border-radius:8px;
+background:#333;
+}
+
+.title{
+margin-top:8px;
+font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>Nextflix</header>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const API_KEY = "3e692a21";
+
+const grid = document.getElementById("grid");
+
+// ✅ YOUR MOVIE LIST GOES HERE
+const items = [
+  [ "Arcane",
+    "https://drive.google.com/drive/u/0/mobile/folders/1i"
+],
+  [
+    "Chainsaw Man Season 1",
+    "https://drive.google.com/drive/folders/1mLP07yNWlh"
+  ],
+  [
+    "Chainsaw man reze",
+    "https://drive.google.com/file/d/1aAB5YtSCZC6P0YC5"
+  ],
+  [
+    "Demon Slayer: Kimetsu no Yaiba",
+    "https://drive.google.com/drive/u/0/mobile/folders/1KZ"
+  ],
+  [
+    "X-Men '97",
+    "https://drive.google.com/drive/u/0/mobile/folders/1GN"
+  ],
+  [
+    "Spider-Man: Into the Spider-Verse",
+    "https://drive.google.com/file/d/1vd55MSQXOcFEWy"
+  ],
+  [
+    "Spider-Man: Across the Spider-Verse",
+    "https://drive.google.com/file/d/1LG3s0KPsOiC4ylrZL"
+  ],
+  [
+    "Stranger Things Season 1",
+    "https://drive.google.com/drive/mobile/folders/1ef9OYl"
+  ],
+  [
+    "Stranger Things Season 2",
+    "https://drive.google.com/drive/mobile/folders/1fSCuQ"
+  ],
+  [
+    "Stranger Things Season 3",
+    "https://drive.google.com/drive/mobile/folders/1fzMFQ"
+  ],
+  [
+    "Stranger Things Season 4",
+    "https://drive.google.com/drive/mobile/folders/1hVGY"
+  ],
+  [
+    "Stranger Things Season 5",
+    "https://drive.google.com/drive/u/0/mobile/folders/1gn"
+  ],
+  [
+    "Coraline",
+    "https://drive.google.com/file/d/12foD5EPXVMyqwEywi"
+  ],
+  [
+    "Fight Club",
+    "https://drive.google.com/file/d/1vo5Z4YB7ReooXf8H"
+  ],
+  [
+    "Five Nights at Freddy's 2",
+    "https://drive.google.com/file/d/1dW1XsOWtiL0mGH"
+  ],
+  [
+    "Sonic the Hedgehog",
+    "https://drive.google.com/file/d/1VlfDQ-WnNbsDgtPdt"
+  ],
+  [
+    "Sonic the Hedgehog 2",
+    "https://drive.google.com/file/d/1QTk7DHGr927bsbxK"
+  ],
+  [
+    "Sonic the Hedgehog 3",
+    "https://drive.google.com/file/d/1UxJlwWC9llGYRUae"
+  ],
+  [
+    "Deadpool",
+    "https://drive.google.com/drive/u/0/mobile/folders/1pUf"
+  ],
+  [
+    "Deadpool & Wolverine",
+    "https://drive.google.com/file/d/1B_eiKUt7N5OxyUN9c"
+  ],
+  [
+    "Avatar: The Last Airbender",
+    "https://drive.google.com/drive/u/0/mobile/folders/"
+  ],
+  [
+    "Avatar: The Last Airbender - The Movie",
+    "https://drive.google.com/file/d/18F5NmcXagAOc80je8"
+  ],
+  [
+    "Iron Man",
+    "https://drive.google.com/drive/u/0/mobile/folders/1kIC"
+  ],
+  [
+    "Thor",
+    "https://drive.google.com/drive/u/0/mobile/folders/1fc"
+  ],
+  [
+    "Captain America: The Winter Soldier",
+    "https://drive.google.com/drive/u/0/mobile/folders/1Q"
+  ],
+  [
+    "The Avengers",
+    "https://drive.google.com/drive/u/0/mobile/folders/1dNu"
+  ],
+  [
+    "Avengers: Age of Ultron",
+    "https://drive.google.com/drive/u/0/mobile/folders/1Vs"
+  ],
+  [
+    "Kpop Demon hunters",
+    "https://drive.google.com/file/d/154SuAglnxoHlvdOOa"
+  ],
+  [
+    "Cruella",
+    "https://drive.google.com/file/d/145c2T7cgpPrnQ10r"
+  ],
+  [
+    "Jujutsu Kaisen 0",
+    "https://drive.google.com/file/d/1ZSkH10Pm_a5zGo"
+  ],
+  [
+    "Jujutsu Kaisen Season 1",
+    "https://drive.google.com/drive/folders/16yM1SHBK"
+  ],
+  [
+    "Jujutsu Kaisen Season 2",
+    "https://drive.google.com/drive/folders/1UgLRpDSR2"
+  ],
+  [
+    "Fantastic Mr. Fox",
+    "https://drive.google.com/file/d/1sQfUPLkuuvsO3uI9j"
+  ],
+  [
+    "Barbie",
+    "https://drive.google.com/drive/folders/1-haquav2KQo"
+  ],
+  [
+    "South Park",
+    "https://drive.google.com/drive/folders/1w3o_qE2iwsj6"
+  ],
+  [
+    "Mean Girls",
+    "https://drive.google.com/file/d/1Hab49OuPK37MngOt"
+  ],
+  [
+    "La La Land",
+    "https://drive.google.com/file/d/1tO4cwggn7lHPfAuzlcDBVI3d4pspM2e/view?usp=drivesdk"
+  ],
+  [
+    "Top Gun",
+    "https://drive.google.com/file/d/1YPdexiO1cHulGguq"
+  ],
+  [
+    "Anastasia",
+    "https://drive.google.com/file/d/1Vej6JoLL11vsSsVo"
+  ],
+  [
+    "Venom",
+    "https://drive.google.com/file/d/1iRN197XeJCQnZGz"
+  ],
+  [
+    "Venom: Let There Be Carnage",
+    "https://drive.google.com/file/d/1N6kL0SF4qR6wFpwf"
+  ],
+  [
+    "One Piece",
+    "https://drive.google.com/drive/folders/1eKvZGBtOZe"
+  ],
+  [
+    "Spirited Away",
+    "https://drive.google.com/file/d/1sFvzAbum2UGqazkh"
+  ],
+  [
+    "Death Note",
+    "https://drive.google.com/drive/folders/166tNe4UUWg"
+  ],
+  [
+    "The Bad Guys",
+    "https://drive.google.com/file/d/17n4vyhsm2tiR3M8"
+  ],
+  [
+    "Coco",
+    "https://drive.google.com/file/d/194M4dGCwh1hTxVM"
+  ],
+  [
+    "Frozen",
+    "https://drive.google.com/file/d/1XIuN4Zp35mW0iN4p0"
+  ],
+  [
+    "Frozen II",
+    "https://drive.google.com/file/d/1hpUpKEdeT9ta-8FjS"
+  ],
+  [
+    "Detective Pikachu",
+    "https://drive.google.com/file/d/1q5wcbuy536XQKTBA"
+  ],
+  [
+    "Klaus",
+    "https://drive.google.com/file/d/1JKqgB1MNLYN"
+  ],
+  [
+    "Spider-Man '97",
+    "https://drive.google.com/drive/folders/11CP20VTJqf7a"
+  ],
+  [
+    "The Lego Ninjago Movie",
+    "https://drive.google.com/drive/folders/14TR--kgAgIj"
+  ],
+  [
+    "The Batman (2022)",
+    "https://drive.google.com/file/d/1O0StvJ8uLVUzt12J"
+  ],
+  [
+    "A Bug's Life",
+    "https://drive.google.com/file/d/1AIq4OqiMWiY9zZSay"
+  ],
+  [
+    "The Amazing World of Gumball Season 1",
+    "https://drive.google.com/drive/folders/1OXgcS7q8G"
+  ],
+  [
+    "The Amazing World of Gumball Season 2",
+    "https://drive.google.com/drive/folders/1VJlXHKRS2q"
+  ],
+  [
+    "The Amazing World of Gumball Season 3",
+    "https://drive.google.com/drive/folders/1jhdpF65hUX"
+  ],
+  [
+    "The Amazing World of Gumball Season 4",
+    "https://drive.google.com/drive/folders/1DO4mX1SM"
+  ],
+  [
+    "The Amazing World of Gumball Season 5",
+    "https://drive.google.com/drive/folders/1W6TZs3tyU"
+  ],
+  [
+    "The Amazing World of Gumball Season 6",
+    "https://drive.google.com/drive/folders/1pZE3vZHVm"
+  ],
+  [
+    "Cobra Kai Season 1",
+    "https://drive.google.com/drive/folders/1idzqcZUju0A"
+  ],
+  [
+    "Gravity Falls Season 1",
+    "https://drive.google.com/drive/folders/1PFOsn___N3j"
+  ],
+  [
+    "The Simpsons Seasons 1-9",
+    "https://drive.google.com/drive/folders/1tXo2krTMvXrATSqthy55PUpRRIu1HRr"
+  ],
+  [
+    "Hotel Transylvania",
+    "https://drive.google.com/file/d/1gZ4FVX5GLCSv2-i_s"
+  ],
+  [
+    "Hotel Transylvania 2",
+    "https://drive.google.com/file/d/1LZI5E52J_R_Cx6f3E"
+  ],
+  [
+    "Hotel Transylvania 3",
+    "https://drive.google.com/file/d/1aS3rHee1w5zNTGGm"
+  ],
+  [
+    "The Powerpuff Girls",
+    "https://drive.google.com/drive/folders/1IYfB0oASMro"
+  ],
+  [
+    "Teen Titans",
+    "https://drive.google.com/drive/folders/1qS2utplmvcG"
+  ],
+  [
+    "Devil May Cry",
+    "https://drive.google.com/drive/folders/1xN2oKUTXY"
+  ],
+  [
+    "Attack on Titan",
+    "https://sites.google.com/view/free-animanga/subbed/"
+  ],
+  [
+    "Alvin and the Chipmunks",
+    "https://drive.google.com/file/d/1uCRRJZj1GAaweX99"
+  ],
+  [
+    "Alvin and the Chipmunks: The Squeakquel",
+    "https://drive.google.com/file/d/1em55qHTtdrWD4Do"
+  ],
+  [
+    "Diary of a Wimpy Kid: Rodrick Rules",
+    "https://drive.google.com/file/d/1rKRsgdNioFs3rtkZai7"
+  ],
+  [
+    "Despicable Me",
+    "https://drive.google.com/file/d/1EWttJTccr_S5MoPr_f"
+  ],
+  [
+    "Komi Can't Communicate Season 1",
+    "https://drive.google.com/drive/folders/1VsPKRjlrawm"
+  ],
+  [
+    "Komi Can't Communicate Season 2",
+    "https://drive.google.com/drive/folders/1SgZ_eimnM"
+  ],
+  [
+    "Wednesday Season 1",
+    "https://drive.google.com/drive/folders/1u4PExVLXbL"
+  ],
+  [
+    "Wednesday Season 2",
+    "https://drive.google.com/drive/u/0/mobile/folders"
+  ],
+  [
+    "Inside Out",
+    "https://drive.google.com/file/d/1BEPGPg_iR7L5QFJ9"
+  ],
+  [
+    "Mulan",
+    "https://drive.google.com/file/d/1ye-qQ6ZmBW98Xab"
+  ],
+  [
+    "The Chronicles of Narnia: The Lion, the Witch and the Wardrobe",
+    "https://drive.google.com/file/d/14TYyfl0ogVnDyw_yK"
+  ],
+  [
+    "The Chronicles of Narnia: Prince Caspian",
+    "https://drive.google.com/file/d/1DxOEqY1EzxcJYSN"
+  ],
+  [
+    "The Chronicles of Narnia: The Voyage of the Dawn Treader",
+    "https://drive.google.com/file/d/12_UK0B8umPhjw5c5"
+  ],
+  [
+    "Bluey Season 1",
+    "https://drive.google.com/drive/folders/1QwcWtD6G"
+  ],
+  [
+    "Bluey Season 2",
+    "https://drive.google.com/drive/folders/1haRPCouOzg"
+  ],
+  [
+    "Bluey Season 3",
+    "https://drive.google.com/drive/folders/1TNnG3i1up"
+  ],
+  [
+    "Batman: The Animated Series Season 1",
+    "https://drive.google.com/drive/folders/12O2UQcS1Xszcb-9kn-s19ruqvk7xnrf8"
+  ],
+  [
+    "Batman: The Animated Series Season 2",
+    "https://drive.google.com/drive/folders/1a04KgdspaWaR2xmlATayoCXIPxWfnkfA"
+  ],
+  [
+    "Batman: The Animated Series Season 3",
+    "https://drive.google.com/drive/folders/1jgzyDn8t28foGqkEugEzz9PPRk-YLKty"
+  ],
+  [
+    "Batman: The Animated Series Season 4",
+    "https://drive.google.com/drive/folders/1UOb87g133XE5L5GRZ6RRYFPZSvy3SOf"
+  ],
+  [
+    "Batman: The Animated Series Season 5",
+    "https://drive.google.com/drive/folders/1B3EpDItVJdqA9XSJV1aq5FFT6mb4yAxB"
+  ],
+  [
+    "Batman: The Animated Series Season 6",
+    "https://drive.google.com/drive/folders/1blktqO0FTXsh5r4hileTyJ-MO5o7YVS4"
+  ],
+  [
+    "Batman: The Animated Series Movies",
+    "https://drive.google.com/drive/folders/1vIh6dbEcPTvCQ2R6wsUBk0dcYHuXxdpa"
+  ],
+  [
+    "Batman Beyond Season 1",
+    "https://drive.google.com/drive/folders/1rrz2S1Rc7wEw4jl-6tuKd3-WRZ6mK0-W"
+  ],
+  [
+    "Batman Beyond Season 2",
+    "https://drive.google.com/drive/folders/1fvCT82F2qUXkC83CDjMvmSildfD1-Dtr"
+  ],
+  [
+    "Batman Beyond Season 3",
+    "https://drive.google.com/drive/folders/1c9yUs9q822bPBSAFpHi71mjCZnt7wawP"
+  ],
+  [
+    "Dexter",
+    "https://drive.google.com/drive/folders/1nsvWa58mrTc"
+  ],
+  [
+    "Doctor Who",
+    "https://drive.google.com/drive/folders/12NK9t4uyTZv"
+  ],
+  [
+    "The Lion King: Mufasa",
+    "https://drive.google.com/file/d/1uQXNlwz-_1PwGdnJ"
+  ],
+  [
+    "Lord of the Rings: The Fellowship of the Ring",
+    "https://drive.google.com/file/d/1hq6ddZnPfcy3TAaMuu"
+  ],
+  [
+    "Lord of the Rings: The Two Towers",
+    "https://drive.google.com/file/d/1Qit_7HisBZUwl8JdT3Y"
+  ],
+  [
+    "High School Musical",
+    "https://drive.google.com/file/d/1tg84YPuUqFUMl"
+  ],
+  [
+    "High School Musical 2",
+    "https://drive.google.com/file/d/1iE1foAQrNAMJJ"
+  ],
+  [
+    "High School Musical 3: Senior Year",
+    "https://drive.google.com/file/d/1aGq7saEhWkyACQl"
+  ],
+  [
+    "Hercules",
+    "https://drive.google.com/file/d/1sXad7VvXVn7qIilwdspq5RtjmInpa7mQ/view?usp="
+  ],
+  [
+    "A Goofy Movie",
+    "https://drive.google.com/file/d/1ify_EMaQW-ZAn2F0STztn2AGU-jE7aHL/view?usp"
+  ],
+  [
+    "Spy x Family Season 1",
+    "https://drive.google.com/drive/folders/1rFZBP0NVuPgKlOANS10UKYMdyQGY3v_"
+  ],
+  [
+    "Spy x Family Season 2",
+    "https://drive.google.com/drive/folders/1TyixfaRsHt2NQgwqf_NTgN7bG6o8hmNq"
+  ],
+  [
+    "Maleficent",
+    "https://drive.google.com/file/d/1yx66GkjBaCwjcMNoovV8w9yPNlZ7Q4Gu/view?us"
+  ],
+  [
+    "The Princess and the Frog",
+    "https://drive.google.com/file/d/1PIQExpRvAPANHRDAZ-On7ld9je2O-5He/view?us"
+  ],
+  [
+    "Blue Beetle",
+    "https://drive.google.com/file/d/1T2XMXtDAlohPcGdi-u2p9zXF9Os9zkY1/view?usp"
+  ],
+  [
+    "Ratatouille",
+    "https://drive.google.com/file/d/1kjVDdXtZ3-O0SndMHeIwMXe4jNZJ4w2C/view?us"
+  ],
+  [
+    "PAW Patrol: The Movie",
+    "https://drive.google.com/file/d/13PKSmF1dnXkByra1B5NLarzB_ux4cU0T/view?us"
+  ],
+  [
+    "The Amazing Spider-Man",
+    "https://drive.google.com/file/d/1Xf8xZcY3kneGFln8NPsQMt7CLtmGhEeD/view?us"
+  ],
+  [
+    "The Amazing Spider-Man 2",
+    "https://drive.google.com/file/d/1hnYa-Pkxqu6Qhhp56QXE34Rnctia_3yw/view?usp"
+  ],
+  [
+    "Spider-Man: No Way Home",
+    "https://drive.google.com/file/d/197Urr_oqVnxEpZOVyd5dOL-n6xvDgBEP/view?us"
+  ],
+  [
+    "The Greatest Showman",
+    "https://drive.google.com/file/d/1ErElLX4tetXsqWfpivPg3JlEht4ERibn/view"
+  ],
+  [
+    "Fall",
+    "https://drive.google.com/file/d/1FZ3UlDvHVMTpsaZ7s08ScOIOeLCnEj7h/view"
+  ],
+  [
+    "Nimona",
+    "https://drive.google.com/file/d/1d8MvTy04-nSxD57CxqHbOD-4IriEI7ee/view"
+  ],
+  [
+    "Matilda",
+    "https://drive.google.com/file/d/0B2ImhGIzHAjubXRDa3J6N1pWbDQ/view?resourc"
+  ],
+  [
+    "Harry Potter and the Sorcerer's Stone",
+    "https://drive.google.com/file/d/1bJMKhvzwuVfAYECLheyA_h38T9oYvkgX/view?us"
+  ],
+  [
+    "Harry Potter and the Chamber of Secrets",
+    "https://drive.google.com/file/d/1AC6j5pNVDl6fcvdT3e3hsAUkkBU-o3xD/view?usp"
+  ],
+  [
+    "Harry Potter and the Prisoner of Azkaban",
+    "https://drive.google.com/file/d/1Zu15ykGtc1xxKIKfAeUV_L1vAbCt--zO/view?usp="
+  ],
+  [
+    "Harry Potter and the Goblet of Fire",
+    "https://drive.google.com/file/d/1yYxqmSv99zFBsJkT0cZYd4C4PTNC9bUU/view?u"
+  ],
+  [
+    "Harry Potter and the Order of the Phoenix",
+    "https://drive.google.com/file/d/1eVK_s8Sp-Gvv1J65ocyLbwyqC7vkuoFK/view?usp"
+  ],
+  [
+    "Harry Potter and the Half-Blood Prince",
+    "https://drive.google.com/file/d/1QfAnvJtU3oR7IV2CrN2qRx4vFThjbbe1/view"
+  ],
+  [
+    "Harry Potter and the Deathly Hallows - Part 1",
+    "https://drive.google.com/file/d/17UlhT2qVX10O8AksEEdWuaUqoVF78-oH/view?u"
+  ],
+  [
+    "Harry Potter and the Deathly Hallows - Part 2",
+    "https://drive.google.com/file/d/16jXkeJny6L8MrC_7issz4AtANAzNDJqw/view?usp"
+  ],
+  [
+    "The Hunger Games",
+    "https://drive.google.com/file/d/1hpbKZaaN6V1mszSE35fjzvvTsZeYxPqh/view?usp"
+  ],
+  [
+    "The Hunger Games: Catching Fire",
+    "https://drive.google.com/file/d/15YgXcPGb6Rg4RPqpNxCDpLypzF3CzoLT/view?u"
+  ],
+  [
+    "The Hunger Games: Mockingjay - Part 1",
+    "https://drive.google.com/file/d/1UP3CmnTIlzVWdhlXXy4eHTArVKGrue_C/view?us"
+  ],
+  [
+    "The Hunger Games: Mockingjay - Part 2",
+    "https://drive.google.com/file/d/1kfVc8McZWfeb2LWMPU6PoTnWz5aV8K6O/view?"
+  ],
+  [
+    "Blue Lock Season 1",
+    "https://drive.google.com/drive/folders/1L_4PmRvkuqYsvLQSzMuaqRVDQg2pb9Z"
+  ],
+  [
+    "My Hero Academia Season 1",
+    "https://drive.google.com/drive/folders/1v8BMG58ZRYNIWSgIxxHezBSCc11XIBIv"
+  ],
+  [
+    "My Hero Academia Season 2",
+    "https://drive.google.com/drive/folders/1hsHIuM_1TjMEMQQDobvz4xw_qi45SVCY"
+  ],
+  [
+    "My Hero Academia Season 3",
+    "https://drive.google.com/drive/folders/1cnArp_7jQz70PwBTiRLJO5_xrYVGgTGl"
+  ],
+  [
+    "My Hero Academia Season 4",
+    "https://drive.google.com/drive/folders/1_JqpVKIvQG14ANk8wBLfq_Rg69mPnZwf"
+  ],
+  [
+    "My Hero Academia Season 5",
+    "https://drive.google.com/drive/folders/1fml71A9f4FzAQwq9FDYyv25vAFoHhsWE"
+  ],
+  [
+    "My Hero Academia Season 6",
+    "https://drive.google.com/drive/folders/11BmJJ1cswuNAYeoDcYl9dFW1QngvClVT"
+  ],
+  [
+    "My Hero Academia Season 6 Part 2",
+    "https://drive.google.com/drive/folders/1GxLXe6eFM6DGTNFpwf-rZhiDL_tCkf8E"
+  ],
+  [
+    "My Hero Academia Season 7",
+    "https://drive.google.com/drive/folders/1-mMJE-niE3RaDu_VUt2upo-tAWdLTvb1"
+  ],
+  [
+    "Sailor Moon",
+    "https://drive.google.com/drive/folders/1mirM2YviJ9MJo2pYG3Cuvt2X3Ac5vCtF"
+  ],
+  [
+    "Superman",
+    "https://drive.google.com/file/d/1Q8eQ4t8dPQdx6HfED1b_H3ixvFaxrRIv/view"
+  ],
+  [
+    "Thunderbolts",
+    "https://drive.google.com/file/d/1xW4I1g_9N5WaAY6yRYx-hkydbkWgwpLq/view"
+  ],
+  [
+    "The Amazing Digital Circus",
+    "https://drive.google.com/drive/u/0/mobile/folders/1Usr"
+  ]
+]
+;
+
+async function getPoster(title){
+  try{
+    const res = await fetch(`https://www.omdbapi.com/?t=${encodeURIComponent(title)}&apikey=${API_KEY}`);
+    const data = await res.json();
+    return data.Poster && data.Poster !== "N/A" ? data.Poster : "";
+  } catch(e){
+    return "";
+  }
+}
+
+async function addMovie(title, url){
+  const poster = await getPoster(title);
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.onclick = () => window.open(url, "_blank");
+
+  card.innerHTML = `
+    <img src="${poster || 'https://via.placeholder.com/300x450?text=No+Image'}">
+    <div class="title">${title}</div>
+  `;
+
+  grid.appendChild(card);
+}
+
+// ✅ AUTO LOAD EVERYTHING FROM ARRAY
+items.forEach(([title, url]) => {
+  addMovie(title, url);
+});
+</script>
+
+</body>
+</html>
